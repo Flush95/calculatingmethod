@@ -35,11 +35,11 @@ public class CalculatingService {
 	}
 	
 	public double calculateSumOfXSquared() {
-		return xArray.stream().map((x) -> (x * x)).map((x) -> x + x).reduce((x, y) -> x + y).get();
+		return xArray.stream().map((x) -> (x * x)).reduce((x, y) -> x + y).get();
 	}
 	
 	public double getB() {
-		return  ((n * XiYi) - (calculateI(xArray) * calculateI(yArray)) / 
+		return  (((n * XiYi) - (calculateI(xArray) * calculateI(yArray))) / 
 				   ((n * calculateSumOfXSquared()) - (Math.pow(calculateI(xArray), 2))));
 	}
 	
@@ -47,8 +47,9 @@ public class CalculatingService {
 	 * Calculate a
 	 */
 	public double getFinalA() {
-		return (((calculateSumOfXSquared() * calculateI(yArray)) - (calculateI(xArray) * XiYi)) / 
-				((n * calculateSumOfXSquared()) - Math.pow(calculateI(xArray), 2)));
+		/*return (((calculateSumOfXSquared() * calculateI(yArray)) - (calculateI(xArray) * XiYi)) / 
+				((n * calculateSumOfXSquared()) - Math.pow(calculateI(xArray), 2)));*/
+		return  (calculateI(yArray) - (getB() *  calculateI(xArray))) / n;
 	}
 	
 	/*
@@ -56,12 +57,20 @@ public class CalculatingService {
 	 */
 	public List<ChartData> finalB() {
 		double finalB = getB();
-
+		double finalA = getFinalA();
 		List<ChartData> data = new ArrayList<>();
+		System.out.println("A: " + getFinalA() + " B: " + finalB);
+		for (int i = 0; i < yArray.size(); i++) {
+			data.add(new ChartData((yArray.get(i) - finalA) / finalB , yArray.get(i)));
+		}
 		
-		xArray.forEach((obj) -> {
+		/*xArray.forEach((obj) -> {
 			data.add(new ChartData(getFinalA(), obj * finalB));
-		});
+			
+			//System.out.println("Y = " + getFinalA() + " + " + obj * finalB);
+		});*/
+		
+		
 		return data;
 	}
 	
